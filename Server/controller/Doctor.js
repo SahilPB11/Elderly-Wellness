@@ -1,22 +1,18 @@
 import User from "../model/User.js";
 import HealthData from "../model/Health.js";
-
-// Helper function to send response
-const sendResponse = (res, statusCode, message, data = null) => {
-  res.status(statusCode).json({ success: true, message, data });
-};
-
+import {
+  constructUserResponse,
+  sendResponse,
+} from "../utils/constructUserResponse.js";
 // get all patients
 export const getAllpatients = async (req, res, next) => {
   try {
     let user = req.user;
     if (user && user.type === "user") {
-      res
-        .status(404)
-        .son({
-          success: false,
-          message: "No its wrong page u trying to reach",
-        });
+      res.status(404).son({
+        success: false,
+        message: "No its wrong page u trying to reach",
+      });
     }
     const users = await User.find({ type: "user" });
 
@@ -26,6 +22,45 @@ export const getAllpatients = async (req, res, next) => {
         .json({ success: false, message: "No users found with type 'user'" });
     }
     sendResponse(res, 200, "Successfully fetched all Patients", users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get patient by ID
+export const getPatientById = async (req, res, next) => {
+  try {
+    const { id } = req.params; // Get user ID from parameters
+
+    // Find user by ID
+    const user = await User.findById(id);
+
+    // Check if user exists
+    if (!user) {
+      return sendResponse(res, 404, "User not found");
+    }
+
+    // Check if the user type is 'user'
+    if (user.type !== "user") {
+      return sendResponse(res, 400, "The specified user is not of type 'user'");
+    }
+
+    // If the user is of type 'user', you can fetch the associated health data if needed
+    // For example, fetching health data associated with the user ID
+    const latestHealthData = await HealthData.findOne({ userId: id }).sort({
+      createdAt: -1,
+    });
+
+    // Construct the user response (excluding password)
+    const userResponse = constructUserResponse(user);
+    (userResponse.latestHealthData = latestHealthData || null),
+      // Send success response with user details
+      sendResponse(
+        res,
+        200,
+        "Successfully fetched patient details",
+        userResponse
+      );
   } catch (error) {
     next(error);
   }
