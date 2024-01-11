@@ -37,12 +37,10 @@ const sendResponse = (res, statusCode, message, user) => {
 export const signUp = async (req, res, next) => {
   try {
     const { name, email, password, age, gender, location } = req.body;
-
     // Validate required fields
     if (!name || !email || !password || !age || !gender || !location) {
       return next(new ErrorHandler("All fields are required", 400));
     }
-
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return next(new ErrorHandler("User already exists", 400));
@@ -59,12 +57,10 @@ export const signUp = async (req, res, next) => {
       gender,
       location
     );
-
     // Construct user response
     const userResponse = constructUserResponse(newUser);
-
     // Send response to the client
-    sendResponse(res, 201, "Registered Successfully", userResponse);
+    sendCookie(res,userResponse, 201, "Registered Successfully");
   } catch (error) {
     next(error);
   }

@@ -11,6 +11,7 @@ const healthSchema = new Schema({
     duration: { type: Number, required: true },
   },
   weight: { type: Number },
+  StepsADay: { type: Number },
   createdAt: { type: Date, default: Date.now },
 });
 

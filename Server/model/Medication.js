@@ -14,6 +14,9 @@ const medicationSchema = new Schema({
       },
     },
   ],
+  WorkOutPlan: { type: String, required: true },
+  DietPlan: { type: String, required: true },
+  SleepTime: { type: Number },
   createdAt: { type: Date, default: Date.now },
 });
 
