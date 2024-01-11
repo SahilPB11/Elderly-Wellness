@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
-const healthSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+const healthSchema = new mongoose.Schema({
   bloodPressure: {
     systolic: { type: Number, required: true },
     diastolic: { type: Number, required: true },
@@ -13,6 +12,7 @@ const healthSchema = new Schema({
   weight: { type: Number },
   StepsADay: { type: Number },
   createdAt: { type: Date, default: Date.now },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 const HealthData = mongoose.model("HealthData", healthSchema);

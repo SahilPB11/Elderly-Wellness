@@ -60,7 +60,7 @@ export const signUp = async (req, res, next) => {
     // Construct user response
     const userResponse = constructUserResponse(newUser);
     // Send response to the client
-    sendCookie(res,userResponse, 201, "Registered Successfully");
+    sendResponse(res, 201, "Registered Successfully", userResponse);
   } catch (error) {
     next(error);
   }
