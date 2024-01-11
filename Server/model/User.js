@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
   type: {
     type: String,
     enum: "user", // Default value for all new users

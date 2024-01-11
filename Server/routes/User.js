@@ -7,6 +7,7 @@ const router = express();
 router.post("/signUp", signUp);
 
 // this route for sinin
+router.post("/login", login);
 
 
 export default router;
