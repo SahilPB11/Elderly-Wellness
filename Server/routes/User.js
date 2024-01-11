@@ -1,5 +1,5 @@
 import express from "express";
-import { signUp } from "../controller/User";
+import { login, logout, signUp } from "../controller/User";
 
 const router = express();
 
@@ -9,5 +9,7 @@ router.post("/signUp", signUp);
 // this route for sinin
 router.post("/login", login);
 
+// logout user
+router.post("/logout", logout);
 
 export default router;
