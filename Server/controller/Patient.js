@@ -17,7 +17,7 @@ export const addOrUpdatePatientRoutine = async (req, res, next) => {
         message: "Doctors are not authorized to add or update health data.",
       });
     }
-    
+
     const { bloodPressure, heartRate, sleepPattern, weight, StepsADay } =
       req.body;
     // Get current date and time

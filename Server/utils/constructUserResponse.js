@@ -1,3 +1,5 @@
+import User from "../model/User.js";
+
 // Helper function to create user
 export const createUser = async (
   name,

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const medicationSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+const medicationSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   medicationName: { type: String, required: true },
   dosage: { type: String, required: true },
   daysToTake: [{ type: String, required: true }], // e.g., ["Monday", "Wednesday", "Friday"]
