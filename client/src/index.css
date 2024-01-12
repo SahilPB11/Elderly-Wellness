@@ -9,31 +9,30 @@
 }
 
 .health-data-slider-container {
-    background-color: #2c3e50; /* Dark background color */
-    color: #ecf0f1; /* Light text color */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    width: 100%; /* Ensure it takes up full width */
-    box-sizing: border-box; /* Include padding in width calculation */
-  }
-  
-  .health-data-slider {
-    overflow: hidden; /* Ensure content doesn't overflow */
-  }
-  
-  .health-data-card {
-    background-color: #34495e; /* Slightly lighter background color */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin-right: 20px; /* Adjust margin as needed */
-    width: 300px; /* Set a fixed width for each card */
-    display: inline-block; /* Display cards in a row */
-  }
-  
-  /* Responsive adjustments can be added as per your requirements */
-  
+  background-color: #2c3e50; /* Dark background color */
+  color: #ecf0f1; /* Light text color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  width: 100%; /* Ensure it takes up full width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.health-data-slider {
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+.health-data-card {
+  background-color: #34495e; /* Slightly lighter background color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-right: 20px; /* Adjust margin as needed */
+  width: 300px; /* Set a fixed width for each card */
+  display: inline-block; /* Display cards in a row */
+}
+
+/* Responsive adjustments can be added as per your requirements */
 
 /* Add more CSS styles as per your design requirements */
 .medication-slider-container {
@@ -65,3 +64,43 @@
 }
 
 /* Responsive adjustments can be added as per your requirements */
+/* Add this to your global styles or component-specific styles */
+.btn-add-med {
+  background-color: #3490dc;
+  color: #ffffff;
+  padding: 8px 16px; /* Adjust padding to make it smaller */
+  border: none;
+  border-radius: 4px; /* Adjust border-radius for a slightly rounded appearance */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px; /* Adjust font size for a smaller appearance */
+  min-height: auto; /* Ensure it doesn't take the height of its container */
+}
+.btn-add-med:hover {
+  background-color: #2779bd;
+}
+
+/* Modal background */
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make the modal responsive */
+.modal-content {
+  background-color: rgb(0 0 0 / 36%);
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%; /* Default width */
+  max-width: 600px; /* Max width */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Add scrolling if content overflows */
+  max-height: 80vh; /* Set maximum height */
+}

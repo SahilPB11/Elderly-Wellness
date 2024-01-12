@@ -29,7 +29,7 @@ export const UserProvider = ({ children }) => {
     // Clear the user context
     setUser(null);
     // Redirect to the login page or any other route you want after logout
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   const [user, setUser] = useState(null);

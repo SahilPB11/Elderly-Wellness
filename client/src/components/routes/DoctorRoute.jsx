@@ -8,6 +8,7 @@ export default function DoctorRoute() {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
+    console.log(user);
     // Check if the user type is Doctor
     if (user && user.type === "doctor") {
       setOk(true); // Set ok to true to render the Outlet

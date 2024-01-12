@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const UserInfoCard = ({ user }) => {
+const UserInfoCard = ({ user, show = true }) => {
   if (user.length == 0) {
     return <></>;
   }
@@ -50,12 +50,14 @@ const UserInfoCard = ({ user }) => {
           <p className="text-gray-400">Location: {user.location}</p>
 
           {/* View Details Button */}
-          <button
-            onClick={handleViewDetails}
-            className="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 md:mt-0"
-          >
-            View Details
-          </button>
+          {show && (
+            <button
+              onClick={handleViewDetails}
+              className="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 md:mt-0"
+            >
+              View Details
+            </button>
+          )}
         </div>
       </div>
     </div>

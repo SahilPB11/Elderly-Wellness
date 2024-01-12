@@ -1,3 +1,4 @@
+// Import necessary modules and middlewares
 import express from "express";
 import { config } from "dotenv";
 import bodyParser from "body-parser";
@@ -8,15 +9,14 @@ import patientRouter from "./routes/Patient.js";
 import doctorRouter from "./routes/Doctor.js";
 import cors from "cors";
 
-// here i am exporting app to server.js file
+// Initialize Express application
 export const app = express();
-config({
-  path: "./.env",
-});
 
-// const link = process.env.Cors_Link;
+// Load environment variables from .env file
+config({ path: "./.env" });
+
+// Set CORS configuration based on environment variable
 const url = process.env.cors_Url;
-console.log(url);
 app.use(
   cors({
     credentials: true,
@@ -24,16 +24,19 @@ app.use(
   })
 );
 
-// middlewares
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
+// Set up middlewares for request parsing and cookie handling
+app.use(bodyParser.json()); // Parse incoming JSON requests
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Parse JSON payloads
+app.use(cookieParser()); // Parse cookies
 
-// all routes
-app.use("/", userRouter);
-app.use("/patient", patientRouter);
-app.use("/doctor", doctorRouter);
+// Set up routes for different functionalities
+app.use("/", userRouter); // User-related routes
+app.use("/patient", patientRouter); // Patient-related routes
+app.use("/doctor", doctorRouter); // Doctor-related routes
 
-// error handler middleware
+// Use error handling middleware to manage and respond to errors
 app.use(errorMiddleware);
+
+// Export the configured Express application for use in other modules
+export default app;

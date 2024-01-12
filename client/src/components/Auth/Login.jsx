@@ -6,7 +6,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser, loginUser } = useContext(UserContext);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,9 +19,11 @@ const Login = () => {
       const response = await axios.post("/login", formData);
       if (response?.data?.success) {
         // Set user data to context
-        loginUser(response.data.token);
+        loginUser(response?.data?.token);
         setUser(response?.data);
-        navigate("/dashboard/home");
+        response.data.type === "doctor"
+          ? navigate("/dashboard/home")
+          : navigate("/UserdashBoard/home");
 
         // Redirect to dashboard or any other route
         // history.push('/dashboard');

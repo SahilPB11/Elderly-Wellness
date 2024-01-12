@@ -5,10 +5,12 @@ import HealthDataSlider from "./HealthDataSlider"; // Your HealthData slider com
 import MedicationSlider from "./MedicationSlider"; // Your Medication slider component
 import UserInfoCard from "../UserInfoCard"; // Your UserInfoCard component
 import { useParams } from "react-router-dom";
+import AddMedicationForm from "./AddMedicationForm";
 
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setuser] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   // ... other states if needed
   async function getAll() {
     try {
@@ -20,9 +22,18 @@ const UserDetails = () => {
       console.log(error);
     }
   }
+
   useEffect(() => {
     getAll();
   }, []);
+
+  const handleAddMedClick = () => {
+    setShowForm(true); // Show the form modal
+  };
+
+  const handleFormClose = () => {
+    setShowForm(false); // Hide the form modal
+  };
 
   return (
     <div className="bg-black">
@@ -38,9 +49,21 @@ const UserDetails = () => {
       </div>
 
       {/* Medication Slider */}
-      <div className="lg:flex lg:justify-center lg:my-8">
+      <div className="lg:flex lg:justify-between lg:my-8">
+        <button onClick={handleAddMedClick} className="btn-add-med">
+          Add New Med
+        </button>
         <MedicationSlider id={id} />
       </div>
+
+      {/* Modal for AddMedicationForm */}
+      {showForm && (
+        <div className="modal-background" onClick={handleFormClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <AddMedicationForm onClose={handleFormClose} id={id} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

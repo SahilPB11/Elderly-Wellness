@@ -1,17 +1,19 @@
+// Import necessary modules and models
 import cron from "node-cron";
 import Medication from "../model/medication.js";
-import User from "../model/User.js"; // Import the User model
-import { sendEmailNotification } from "../utils/helperfun.js"; // Import the sendEmailNotification function
+import User from "../model/User.js";
+import { sendEmailNotification } from "../utils/helperfun.js";
 
-// Method to set up the cron job for sending medication notifications
+// Set up cron job for sending medication reminders
 export const setupMedicationNotifications = () => {
-  // Schedule the task to run every hour (adjust the cron expression as needed)
+  // Schedule the cron job to run every 4 hours
   cron.schedule("0 */4 * * *", async () => {
     try {
-      // Get the current hour (e.g., 'Morning', 'Afternoon', 'Evening', 'Night')
+      // Determine the time of day based on the current hour
       const currentHour = new Date().getHours();
       let timeOfDay;
 
+      // Assign time of day based on current hour
       if (currentHour >= 6 && currentHour < 12) {
         timeOfDay = "Morning";
       } else if (currentHour >= 12 && currentHour < 17) {
@@ -22,28 +24,32 @@ export const setupMedicationNotifications = () => {
         timeOfDay = "Night";
       }
 
-      // Fetch medications that need to be taken at the current time of day
+      // Fetch medications to remind based on the time of day
       const medications = await Medication.find({
         "timesToTake.time": timeOfDay,
       }).populate("userId");
 
-      // Send email notifications for medications that need to be taken at the current time of day
+      // Send email notifications for the fetched medications
       for (const medication of medications) {
-        // Fetch user details using userId to get the email
+        // Retrieve user details for sending notifications
         const user = await User.findById(medication.userId);
 
+        // Check if user details and email are available
         if (user && user.email) {
-          const subject = `Medication Reminder - ${medication.medicationName}`;
-          const text = `It's time to take your medication: ${medication.medicationName} - ${medication.dosage}`;
+          // Prepare email details
+          const subject = `Medication Reminder: ${medication.medicationName}`;
+          const text = `Please take your medication: ${medication.medicationName} - ${medication.dosage}`;
 
-          await sendEmailNotification(user.email, subject, text); // Send email to user's email address
+          // Send email notification
+          await sendEmailNotification(user.email, subject, text);
         }
       }
     } catch (error) {
+      // Log any errors encountered during the process
       console.error("Error scheduling medication notifications:", error);
     }
   });
 };
 
-// Initialize cron job for medication notifications when your application starts
+// Initialize the medication notifications cron job upon application start
 setupMedicationNotifications();

@@ -7,6 +7,8 @@ import DocterRoute from "./components/routes/DoctorRoute";
 import PatientRoute from "./components/routes/PatientRoute";
 import DoctorHome from "./pages/Doctor/DoctorHome";
 import UserDetails from "./components/Doctor/UserDetails";
+import PatientHome from "./pages/Patient/PatientHome";
+import Medication from "./components/Patient/Medication";
 const App = () => {
   axios.defaults.baseURL = import.meta.env.VITE_APP_SERVER_URL;
   axios.defaults.withCredentials = true;
@@ -20,8 +22,9 @@ const App = () => {
           <Route path="home" element={<DoctorHome />} />
           <Route path="user-details/:id" element={<UserDetails />} />
         </Route>
-        <Route path="dashBoard" element={<PatientRoute />}>
-
+        <Route path="UserdashBoard" element={<PatientRoute />}>
+          <Route path="home" element={<PatientHome />} />
+          <Route path="medication" element={<Medication />} />
         </Route>
       </Routes>
     </>

@@ -35,18 +35,29 @@ const Navbar = () => {
             <div
               className={`sm:flex ${isOpen ? "flex" : "hidden"} items-center`}
             >
-              <Link
-                to="/dashboard/home"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Home
-              </Link>
-              <Link
-                to="/dashboard/medication"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Medication
-              </Link>
+              {user?.type === "user" ? (
+                <Link
+                  to="/UserdashBoard/home"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Home
+                </Link>
+              ) : (
+                <Link
+                  to="/dashboard/home"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Home
+                </Link>
+              )}
+              {user?.type === "user" && (
+                <Link
+                  to="/UserdashBoard/medication"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Medication
+                </Link>
+              )}
             </div>
 
             {/* Logout Button */}

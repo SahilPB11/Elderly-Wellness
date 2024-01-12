@@ -16,7 +16,7 @@ const HealthDataSlider = ({ id }) => {
   }
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   function formatDate(isoString) {
     const date = new Date(isoString);

@@ -1,35 +1,37 @@
+// Import necessary models and utility functions
 import HealthData from "../model/Health.js";
 import {
   sendResponse,
   getUserMedicationForDay,
+  constructUserResponse,
 } from "../utils/helperfun.js";
+import User from "../model/User.js";
 
-// Add or update daily routine by patient for the current date
+// Add or update daily health routine for a patient
 export const addOrUpdatePatientRoutine = async (req, res, next) => {
   try {
     const user = req.user;
 
-    // Check if the authenticated user is a doctor
+    // Only allow patients to add or update their health data
     if (user.type === "doctor") {
       return res.status(403).json({
         success: false,
-        message: "Doctors are not authorized to add or update health data.",
+        message: "Doctors cannot add or update health data.",
       });
     }
 
+    // Extract health metrics from request body
     const { bloodPressure, heartRate, sleepPattern, weight, StepsADay } =
       req.body;
-    // Get current date and time
+
+    // Set today's date range
     const currentDate = new Date();
     const startOfToday = new Date(currentDate.setHours(0, 0, 0, 0));
     const endOfToday = new Date(currentDate.setHours(23, 59, 59, 999));
 
-    // Check if health record exists for the current user and date
+    // Update or insert health data for the current day
     let healthRecord = await HealthData.findOneAndUpdate(
-      {
-        userId: user._id,
-        createdAt: { $gte: startOfToday, $lte: endOfToday },
-      },
+      { userId: user._id, createdAt: { $gte: startOfToday, $lte: endOfToday } },
       {
         userId: user._id,
         bloodPressure,
@@ -38,56 +40,75 @@ export const addOrUpdatePatientRoutine = async (req, res, next) => {
         weight,
         StepsADay,
       },
-      {
-        new: true, // Return updated document if found
-        upsert: true, // Create new document if not found
-        setDefaultsOnInsert: true, // Sets default values on insert
-      }
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-    // Send success response
-    sendResponse(
-      res,
-      200,
-      "Health data added or updated successfully",
-      healthRecord
-    );
+
+    // Send a success response
+    sendResponse(res, 200, "Health data updated successfully", healthRecord);
   } catch (error) {
     next(error);
   }
 };
 
-// Function to determine the current day and fetch the user's medication for that day
+// Fetch medication schedule for the current day
 export const getCurrentUserMedicationSchedule = async (req, res, next) => {
   try {
-    // Get the user ID from req.user
-    const userId = req.user._id;
+    const userId = req.user._id; // Get user ID
 
-    // Get the current day of the week (e.g., "Sunday", "Monday", etc.)
+    // Determine the current day of the week
     const currentDay = new Date().toLocaleString("en-US", { weekday: "long" });
 
-    // Fetch the user's medication schedule for the current day
+    // Get medication schedule for the current day
     const medicationForToday = await getUserMedicationForDay(
       userId,
       currentDay
     );
 
-    // Check if medications are found for today
+    // Return medication schedule if available
     if (medicationForToday && medicationForToday.length > 0) {
-      // Send the medication schedule for today in the response
       res.status(200).json({
         success: true,
-        message: `Medication schedule for ${currentDay}`,
+        message: `Today's medication schedule for ${currentDay}`,
         data: medicationForToday,
       });
     } else {
-      // Send a custom message if no medications are found for today
       res.status(200).json({
         success: true,
-        message: "Enjoy today, no medications for today.",
+        message: "No medications scheduled for today.",
       });
     }
   } catch (error) {
-    // Handle any errors and pass them to the error-handling middleware
+    next(error);
+  }
+};
+
+// Fetch patient details by ID
+export const getPatientById = async (req, res, next) => {
+  try {
+    const { id } = req.params; // Extract user ID
+
+    // Find user by ID
+    const user = await User.findById(id);
+
+    // Return error if user not found
+    if (!user) {
+      return sendResponse(res, 404, "User not found");
+    }
+
+    // Ensure the user type is 'user'
+    if (user.type !== "user") {
+      return sendResponse(res, 400, "Invalid user type");
+    }
+
+    // Construct and send user details response
+    const userResponse = constructUserResponse(user);
+    sendResponse(
+      res,
+      200,
+      "Patient details fetched successfully",
+      userResponse
+    );
+  } catch (error) {
     next(error);
   }
 };

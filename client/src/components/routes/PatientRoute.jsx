@@ -9,7 +9,7 @@ export default function PatientRoute() {
 
   useEffect(() => {
     // Check if the user type is Doctor
-    if (user && user.type === "user") {
+    if (user && user?.type === "user") {
       setOk(true); // Set ok to true to render the Outlet
     } else {
       setOk(false); // Set ok to false to display the Spinner or handle differently based on your requirement

@@ -15,10 +15,9 @@ const MedicationSlider = ({ id }) => {
     }
   }
 
-
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   // Check if medications array is empty
   if (medications.length === 0) {

@@ -1,145 +1,68 @@
+// Importing necessary models and utility functions
 import User from "../model/User.js";
 import HealthData from "../model/Health.js";
 import Medication from "../model/medication.js";
 import { constructUserResponse, sendResponse } from "../utils/helperfun.js";
-// get all patients
+
+/**
+ * Fetch all patients with user type 'user'.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 export const getAllpatients = async (req, res, next) => {
   try {
     let user = req.user;
+    // Check if the authenticated user is not a regular user
     if (user && user.type === "user") {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
-        message: "No its wrong page u trying to reach",
+        message: "Invalid request. Access denied.",
       });
     }
+    // Fetch all users with type 'user'
     const users = await User.find({ type: "user" });
-
+    // Handle case where no users are found
     if (!users || users.length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "No users found with type 'user'" });
+        .json({ success: false, message: "No users found." });
     }
+    // Send success response with user details
     sendResponse(res, 200, "Successfully fetched all Patients", users);
   } catch (error) {
+    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// Get patient by ID
+/**
+ * Fetch a specific patient by their ID.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 export const getPatientById = async (req, res, next) => {
   try {
-    const { id } = req.params; // Get user ID from parameters
-
-    // Find user by ID
+    const { id } = req.params; // Extract user ID from request parameters
+    // Find the user by ID
     const user = await User.findById(id);
-
-    // Check if user exists
+    // Handle case where user is not found
     if (!user) {
       return sendResponse(res, 404, "User not found");
     }
-
-    // Check if the user type is 'user'
-    if (user.type !== "user") {
-      return sendResponse(res, 400, "The specified user is not of type 'user'");
-    }
-
-    // If the user is of type 'user', you can fetch the associated health data if needed
-    // For example, fetching health data associated with the user ID
+    // Fetch latest health data for the user, if available
     const latestHealthData = await HealthData.findOne({ userId: id }).sort({
       createdAt: -1,
     });
-    // Construct the user response (excluding password)
+    // Construct user response and include health data if available
     const userResponse = constructUserResponse(user);
-    (userResponse.latestHealthData = latestHealthData || null),
-      // Send success response with user details
-      sendResponse(
-        res,
-        200,
-        "Successfully fetched patient details",
-        userResponse
-      );
-  } catch (error) {
-    next(error);
-  }
-};
-
-// Get all health data for a patient by ID with latest records on top
-export const getPatientHealthDataById = async (req, res, next) => {
-  try {
-    const { id } = req.params; // Get user ID from parameters
-
-    // Find user by ID
-    const user = await User.findById(id);
-
-    // Check if user exists
-    if (!user) {
-      return sendResponse(res, 404, "User not found");
-    }
-
-    // Check if the user type is 'user'
-    if (user.type !== "user") {
-      return sendResponse(res, 400, "The specified user is not of type 'user'");
-    }
-
-    // Fetch all health data records for the user based on userId, sorted by createdAt in descending order
-    let latestHealthData = [];
-    latestHealthData = await HealthData.findOne({ userId: id }).sort({
-      createdAt: -1,
-    });
-    console.log("Latest Health Data:", latestHealthData);
-
-    // const userResponse = constructUserResponse(user);
-    // userResponse.healthData = latestHealthData    || [];
-
-    // Send success response with user details and all health data records
+    userResponse.latestHealthData = latestHealthData || null;
+    // Send success response with user details
     sendResponse(
       res,
       200,
-      "Successfully fetched all health data for the patient",
-      latestHealthData
-    );
-  } catch (error) {
-    next(error);
-  }
-};
-
-// Get all medication data for a patient by ID with latest records on top
-export const getPatientMedicationById = async (req, res, next) => {
-  try {
-    const { id } = req.params; // Get user ID from parameters
-
-    // Find user by ID
-    const user = await User.findById(id);
-
-    // Check if user exists
-    if (!user) {
-      return sendResponse(res, 404, "User not found");
-    }
-
-    // Check if the user type is 'user'
-    if (user.type !== "user") {
-      return sendResponse(res, 400, "The specified user is not of type 'user'");
-    }
-
-    // Fetch all medication records for the user based on userId, sorted by createdAt in descending order
-    let latestMedications = [];
-    try {
-      latestMedications = await Medication.find({ userId: id }).sort({
-        createdAt: -1,
-      });
-      console.log("Latest Medications:", latestMedications);
-    } catch (error) {
-      console.error("Error fetching medication data:", error);
-    }
-
-    const userResponse = constructUserResponse(user);
-    userResponse.medications = latestMedications || [];
-
-    // Send success response with user details and all medication records
-    sendResponse(
-      res,
-      200,
-      "Successfully fetched all medication data for the patient",
+      "Successfully fetched patient details",
       userResponse
     );
   } catch (error) {
@@ -147,71 +70,103 @@ export const getPatientMedicationById = async (req, res, next) => {
   }
 };
 
-// add a ptient medication
+/**
+ * Fetch all health data records for a specific patient by their ID.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
+export const getPatientHealthDataById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return sendResponse(res, 404, "User not found");
+    }
+    const latestHealthData = await HealthData.findOne({ userId: id }).sort({
+      createdAt: -1,
+    });
+    sendResponse(
+      res,
+      200,
+      "Successfully fetched all health data",
+      latestHealthData
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Fetch all medication records for a specific patient by their ID.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
+export const getPatientMedicationById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return sendResponse(res, 404, "User not found");
+    }
+    const latestMedications = await Medication.find({ userId: id }).sort({
+      createdAt: -1,
+    });
+    const userResponse = constructUserResponse(user);
+    userResponse.medications = latestMedications || [];
+    sendResponse(
+      res,
+      200,
+      "Successfully fetched all medication data",
+      userResponse
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Add medication details for a specific patient by their ID.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 export const addPatientMedication = async (req, res, next) => {
   try {
-    // Check if the authenticated user is a doctor
+    // Ensure the authenticated user is a doctor
     if (req.user.type !== "doctor") {
       return res.status(403).json({
         success: false,
-        message: "Only doctors are authorized to add patient medications.",
+        message: "Only doctors can add patient medications.",
       });
     }
-
-    const userId = req.params.id; // Get user ID from request parameters
-
-    // Find the user by ID
+    const userId = req.params.id; // Extract user ID from request parameters
     const user = await User.findById(userId);
-
-    // Check if the user exists
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found.",
       });
     }
-
     if (user.type === "doctor") {
       return res.status(403).json({
         success: false,
-        message: "doctors cant authorized medicene to himself.",
+        message: "Doctors cannot add medications for themselves.",
       });
     }
-
-    // Extract the medication details from the request body
-    const {
-      medicationName,
-      dosage,
-      daysToTake,
-      timesToTake,
-      WorkOutPlan,
-      DietPlan,
-      SleepTime,
-    } = req.body;
-
-    // Create a new medication instance
-    const medication = new Medication({
-      userId,
-      medicationName,
-      dosage,
-      daysToTake,
-      timesToTake,
-      WorkOutPlan,
-      DietPlan,
-      SleepTime,
-    });
-
-    // Save the medication details to the database
-    const savedMedication = await medication.save();
-
-    // Send a success response
+    // Extract medication details from request body and create a new medication instance
+    const medication = new Medication(req.body);
+    medication.userId = userId;
+    const savedMedication = await medication.save(); // Save medication details to database
+    // Send success response with saved medication details
     res.status(201).json({
       success: true,
       message: "Patient medication added successfully",
       data: savedMedication,
     });
   } catch (error) {
-    // Handle any errors and pass them to the error-handling middleware
+    // Pass any errors to the error-handling middleware
     next(error);
   }
 };

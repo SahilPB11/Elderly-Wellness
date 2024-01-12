@@ -1,3 +1,4 @@
+// Import required modules and middlewares
 import express from "express";
 import isAuthenticated from "../middlewares/Authenticated.js";
 import {
@@ -7,28 +8,24 @@ import {
   addPatientMedication,
   getPatientMedicationById
 } from "../controller/Doctor.js";
+
+// Initialize Express router
 const router = express();
 
-// here i will see all the patients
+// Route to fetch all patients (accessible only if authenticated)
 router.get("/allPatients", isAuthenticated, getAllpatients);
 
-// here i can find a specific user with id and i can send it to back
+// Route to fetch a specific patient by ID (accessible only if authenticated)
 router.get("/getPatient/:id", isAuthenticated, getPatientById);
 
-// here i am getting all healt data for a specific user
-router.get(
-  "/getPatienthealhData/:id",
-  isAuthenticated,
-  getPatientHealthDataById
-);
-// here i am getting all healt data for a specific user
-router.get(
-  "/getPatientMedication/:id",
-  isAuthenticated,
-  getPatientMedicationById
-);
+// Route to fetch health data for a specific patient by ID (accessible only if authenticated)
+router.get("/getPatienthealhData/:id", isAuthenticated, getPatientHealthDataById);
 
-// add a ptient medication
+// Route to fetch medication data for a specific patient by ID (accessible only if authenticated)
+router.get("/getPatientMedication/:id", isAuthenticated, getPatientMedicationById);
+
+// Route to add medication for a specific patient by ID (accessible only if authenticated)
 router.post("/addPatientMed/:id", isAuthenticated, addPatientMedication);
 
+// Export the router for use in the main application file
 export default router;
