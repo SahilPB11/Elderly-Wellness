@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const { setUser, loginUser } = useContext(UserContext);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

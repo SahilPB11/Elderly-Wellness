@@ -1,7 +1,11 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const UserInfoCard = ({ user }) => {
+  if (user.length == 0) {
+    return <></>;
+  }
   // Function to generate a random background color
+  const navigate = useNavigate();
   const getRandomColor = () => {
     const colors = [
       "#FF6633",
@@ -20,6 +24,11 @@ const UserInfoCard = ({ user }) => {
 
   // Get the first letter of the user's name for the avatar
   const firstLetter = user.name.charAt(0).toUpperCase();
+
+  // Function to handle navigation to UserDetails page
+  const handleViewDetails = () => {
+    navigate(`/dashboard/user-details/${user._id}`);
+  };
 
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md p-4 sm:p-6 md:p-8">
@@ -42,10 +51,7 @@ const UserInfoCard = ({ user }) => {
 
           {/* View Details Button */}
           <button
-            onClick={() => {
-              // Navigate to detailed view when a user is clicked
-              // You can use react-router-dom for this
-            }}
+            onClick={handleViewDetails}
             className="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 md:mt-0"
           >
             View Details

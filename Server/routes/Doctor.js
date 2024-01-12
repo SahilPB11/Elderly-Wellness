@@ -5,6 +5,7 @@ import {
   getPatientById,
   getPatientHealthDataById,
   addPatientMedication,
+  getPatientMedicationById
 } from "../controller/Doctor.js";
 const router = express();
 
@@ -19,6 +20,12 @@ router.get(
   "/getPatienthealhData/:id",
   isAuthenticated,
   getPatientHealthDataById
+);
+// here i am getting all healt data for a specific user
+router.get(
+  "/getPatientMedication/:id",
+  isAuthenticated,
+  getPatientMedicationById
 );
 
 // add a ptient medication

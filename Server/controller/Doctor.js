@@ -83,22 +83,63 @@ export const getPatientHealthDataById = async (req, res, next) => {
 
     // Fetch all health data records for the user based on userId, sorted by createdAt in descending order
     let latestHealthData = [];
-    try {
-      latestHealthData = await HealthData.findOne({ userId: id }).sort({
-        createdAt: -1,
-      });
-      console.log("Latest Health Data:", latestHealthData);
-    } catch (error) {
-      console.error("Error fetching health data:", error);
-    }
-    const userResponse = constructUserResponse(user);
-    userResponse.healthData = latestHealthData || [];
+    latestHealthData = await HealthData.findOne({ userId: id }).sort({
+      createdAt: -1,
+    });
+    console.log("Latest Health Data:", latestHealthData);
+
+    // const userResponse = constructUserResponse(user);
+    // userResponse.healthData = latestHealthData    || [];
 
     // Send success response with user details and all health data records
     sendResponse(
       res,
       200,
       "Successfully fetched all health data for the patient",
+      latestHealthData
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all medication data for a patient by ID with latest records on top
+export const getPatientMedicationById = async (req, res, next) => {
+  try {
+    const { id } = req.params; // Get user ID from parameters
+
+    // Find user by ID
+    const user = await User.findById(id);
+
+    // Check if user exists
+    if (!user) {
+      return sendResponse(res, 404, "User not found");
+    }
+
+    // Check if the user type is 'user'
+    if (user.type !== "user") {
+      return sendResponse(res, 400, "The specified user is not of type 'user'");
+    }
+
+    // Fetch all medication records for the user based on userId, sorted by createdAt in descending order
+    let latestMedications = [];
+    try {
+      latestMedications = await Medication.find({ userId: id }).sort({
+        createdAt: -1,
+      });
+      console.log("Latest Medications:", latestMedications);
+    } catch (error) {
+      console.error("Error fetching medication data:", error);
+    }
+
+    const userResponse = constructUserResponse(user);
+    userResponse.medications = latestMedications || [];
+
+    // Send success response with user details and all medication records
+    sendResponse(
+      res,
+      200,
+      "Successfully fetched all medication data for the patient",
       userResponse
     );
   } catch (error) {

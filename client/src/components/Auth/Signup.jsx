@@ -1,6 +1,6 @@
 // src/components/Signup.js
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Signup = () => {
   const navigate = useNavigate();
@@ -13,6 +13,8 @@ const Signup = () => {
     gender: "",
     location: "",
   });
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
