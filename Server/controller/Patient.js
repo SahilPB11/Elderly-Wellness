@@ -1,8 +1,13 @@
 import HealthData from "../model/Health.js";
-
-// Helper function to send response
-const sendResponse = (res, statusCode, message, user) => {
-  res.status(statusCode).json({ success: true, message, user });
+import { sendResponse } from "../utils/helperfun.js";
+import Medication from "../model/medication.js";
+// Function to fetch the medication schedule for a specific day
+const getUserMedicationForDay = async (userId, day) => {
+  // Find medications for the user that need to be taken on the specified day
+  return await Medication.find({
+    userId,
+    daysToTake: day,
+  }).select("medicationName dosage timesToTake");
 };
 
 // Add or update daily routine by patient for the current date
@@ -53,6 +58,42 @@ export const addOrUpdatePatientRoutine = async (req, res, next) => {
       healthRecord
     );
   } catch (error) {
+    next(error);
+  }
+};
+
+// Function to determine the current day and fetch the user's medication for that day
+export const getCurrentUserMedicationSchedule = async (req, res, next) => {
+  try {
+    // Get the user ID from req.user
+    const userId = req.user._id;
+
+    // Get the current day of the week (e.g., "Sunday", "Monday", etc.)
+    const currentDay = new Date().toLocaleString("en-US", { weekday: "long" });
+
+    // Fetch the user's medication schedule for the current day
+    const medicationForToday = await getUserMedicationForDay(
+      userId,
+      currentDay
+    );
+
+    // Check if medications are found for today
+    if (medicationForToday && medicationForToday.length > 0) {
+      // Send the medication schedule for today in the response
+      res.status(200).json({
+        success: true,
+        message: `Medication schedule for ${currentDay}`,
+        data: medicationForToday,
+      });
+    } else {
+      // Send a custom message if no medications are found for today
+      res.status(200).json({
+        success: true,
+        message: "Enjoy today, no medications for today.",
+      });
+    }
+  } catch (error) {
+    // Handle any errors and pass them to the error-handling middleware
     next(error);
   }
 };

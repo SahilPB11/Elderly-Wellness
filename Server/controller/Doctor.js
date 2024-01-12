@@ -1,10 +1,7 @@
 import User from "../model/User.js";
 import HealthData from "../model/Health.js";
-import Medication from "../model/Medication.js";
-import {
-  constructUserResponse,
-  sendResponse,
-} from "../utils/constructUserResponse.js";
+import Medication from "../model/medication.js";
+import { constructUserResponse, sendResponse } from "../utils/helperfun.js";
 // get all patients
 export const getAllpatients = async (req, res, next) => {
   try {

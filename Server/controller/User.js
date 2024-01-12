@@ -6,7 +6,7 @@ import {
   constructUserResponse,
   createUser,
   sendResponse,
-} from "../utils/constructUserResponse.js";
+} from "../utils/helperfun.js";
 
 // SignUp User
 export const signUp = async (req, res, next) => {
@@ -19,10 +19,10 @@ export const signUp = async (req, res, next) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return next(new ErrorHandler("User already exists", 400));
-    
+
     // Hash the password
     const hashPassword = await bcrypt.hash(password, 10);
-    
+
     // Create user
     const newUser = await createUser(
       name,
@@ -31,7 +31,7 @@ export const signUp = async (req, res, next) => {
       age,
       gender,
       location
-      );
+    );
     // Construct user response
     const userResponse = constructUserResponse(newUser);
     // Send response to the client
