@@ -24,11 +24,12 @@ export const UserProvider = ({ children }) => {
   };
 
   const logoutUser = () => {
-    // Remove token from local storage
+    // Remove the token from localStorage or wherever you're storing it
     localStorage.removeItem("token");
-
-    // Clear user from state or perform any necessary action
+    // Clear the user context
     setUser(null);
+    // Redirect to the login page or any other route you want after logout
+    window.location.href = "/login";
   };
 
   const [user, setUser] = useState(null);
