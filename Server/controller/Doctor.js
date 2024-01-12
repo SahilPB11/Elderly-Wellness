@@ -107,3 +107,66 @@ export const getPatientHealthDataById = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// add a ptient medication 
+export const addPatientMedication = async (req, res, next) => {
+    try {
+      // Check if the authenticated user is a doctor
+      if (req.user.type !== 'doctor') {
+        return res.status(403).json({
+          success: false,
+          message: 'Only doctors are authorized to add patient medications.',
+        });
+      }
+  
+      const userId = req.params.id; // Get user ID from request parameters
+  
+      // Find the user by ID
+      const user = await User.findById(userId);
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found.',
+        });
+      }
+  
+      // Extract the medication details from the request body
+      const {
+        medicationName,
+        dosage,
+        daysToTake,
+        timesToTake,
+        WorkOutPlan,
+        DietPlan,
+        SleepTime,
+      } = req.body;
+  
+      // Create a new medication instance
+      const medication = new Medication({
+        userId,
+        medicationName,
+        dosage,
+        daysToTake,
+        timesToTake,
+        WorkOutPlan,
+        DietPlan,
+        SleepTime,
+      });
+  
+      // Save the medication details to the database
+      const savedMedication = await medication.save();
+  
+      // Send a success response
+      res.status(201).json({
+        success: true,
+        message: 'Patient medication added successfully',
+        data: savedMedication,
+      });
+    } catch (error) {
+      // Handle any errors and pass them to the error-handling middleware
+      next(error);
+    }
+  };

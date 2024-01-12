@@ -9,6 +9,15 @@ const sendResponse = (res, statusCode, message, user) => {
 export const addOrUpdatePatientRoutine = async (req, res, next) => {
   try {
     const user = req.user;
+
+    // Check if the authenticated user is a doctor
+    if (user.type === "doctor") {
+      return res.status(403).json({
+        success: false,
+        message: "Doctors are not authorized to add or update health data.",
+      });
+    }
+    
     const { bloodPressure, heartRate, sleepPattern, weight, StepsADay } =
       req.body;
     // Get current date and time

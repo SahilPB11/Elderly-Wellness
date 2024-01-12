@@ -4,6 +4,7 @@ import {
   getAllpatients,
   getPatientById,
   getPatientHealthDataById,
+  addPatientMedication,
 } from "../controller/Doctor.js";
 const router = express();
 
@@ -19,5 +20,8 @@ router.get(
   isAuthenticated,
   getPatientHealthDataById
 );
+
+// add a ptient medication
+router.post("/addPatientMed/:id", isAuthenticated, addPatientMedication);
 
 export default router;
