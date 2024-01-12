@@ -1,14 +1,8 @@
 import HealthData from "../model/Health.js";
-import { sendResponse } from "../utils/helperfun.js";
-import Medication from "../model/medication.js";
-// Function to fetch the medication schedule for a specific day
-const getUserMedicationForDay = async (userId, day) => {
-  // Find medications for the user that need to be taken on the specified day
-  return await Medication.find({
-    userId,
-    daysToTake: day,
-  }).select("medicationName dosage timesToTake");
-};
+import {
+  sendResponse,
+  getUserMedicationForDay,
+} from "../utils/helperfun.js";
 
 // Add or update daily routine by patient for the current date
 export const addOrUpdatePatientRoutine = async (req, res, next) => {
