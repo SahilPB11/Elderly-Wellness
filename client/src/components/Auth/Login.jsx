@@ -1,7 +1,37 @@
-// src/components/Login.js
-import React from "react";
-
+import React, { useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 const Login = () => {
+  const { setUser, loginUser } = useContext(UserContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+
+    try {
+      // Send login request using Axios
+      const response = await axios.post("/login", formData);
+
+      if (response.status === 201 || response.status === 200) {
+        // Set user data to context
+        loginUser(response.data.token);
+        setUser(response?.data?.user);
+
+        // Redirect to dashboard or any other route
+        // history.push('/dashboard');
+      } else {
+        // Handle error scenario
+        console.error("Login failed:", response.data.message);
+      }
+    } catch (error) {
+      // Handle error scenario
+      console.error("Error during login:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-900 text-white">
       {/* Background Image for Large Screens */}
@@ -16,7 +46,10 @@ const Login = () => {
       {/* Login Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center p-8">
         <h2 className="text-2xl mb-4 text-center">Login</h2>
-        <form className="bg-gray-800 p-6 rounded-lg shadow-md">
+        <form
+          className="bg-gray-800 p-6 rounded-lg shadow-md"
+          onSubmit={handleSubmit}
+        >
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium mb-2">
               Email
@@ -51,7 +84,6 @@ const Login = () => {
         </form>
       </div>
     </div>
-    // </div>
   );
 };
 
