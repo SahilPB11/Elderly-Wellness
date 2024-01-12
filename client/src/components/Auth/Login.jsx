@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../../context/UserContext.jsx";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Login = () => {
+  const navigate = useNavigate();
   const { setUser, loginUser } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
@@ -15,11 +17,11 @@ const Login = () => {
     try {
       // Send login request using Axios
       const response = await axios.post("/login", formData);
-
-      if (response.status === 201 || response.status === 200) {
+      if (response?.data?.success) {
         // Set user data to context
         loginUser(response.data.token);
-        setUser(response?.data?.user);
+        setUser(response?.data);
+        navigate("/dashboard/home");
 
         // Redirect to dashboard or any other route
         // history.push('/dashboard');

@@ -1,17 +1,21 @@
-// src/components/DoctorDashboard.js
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInfoCard from "../UserInfoCard";
 
 const DoctorDashboard = () => {
   const [users, setUsers] = useState([]);
-
+  async function getUser() {
+    try {
+      // Fetch users from the API
+      await axios.get("/doctor/allPatients").then((response) => {
+        setUsers(response.data.user); // Access the 'user' array from the response data
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
-    // Fetch users from the API
-    axios.get("/doctor/allPatients").then((response) => {
-      setUsers(response.data.user); // Access the 'user' array from the response data
-    });
+    getUser();
   }, []);
 
   return (

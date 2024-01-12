@@ -16,6 +16,7 @@ const sendCookie = (res, user, statusCode = 201, message) => {
       message: message,
       username: user.username,
       _id: user._id,
+      type: user.type,
     });
 };
 
