@@ -18,21 +18,35 @@ const HealthDataForm = ({ userId }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    // Handle nested properties
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prevData) => ({
+        ...prevData,
+        [parent]: {
+          ...prevData[parent],
+          [child]: value,
+        },
+      }));
+    } else {
+      // Handle non-nested properties
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/healthdata", {
+      await axios.post("/patient/patientRoutine", {
         ...formData,
         userId,
       });
 
+      // Reset the form data after successful submission
       setFormData({
         bloodPressure: {
           systolic: "",
@@ -53,12 +67,17 @@ const HealthDataForm = ({ userId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-800 text-white p-8 rounded-lg shadow-lg"
+    >
       <h2 className="text-2xl mb-4">Enter Health Data</h2>
 
       {/* Blood Pressure */}
       <div className="mb-4">
-        <label className="block mb-2 text-gray-300">Systolic Blood Pressure:</label>
+        <label className="block mb-2 text-gray-300">
+          Systolic Blood Pressure:
+        </label>
         <input
           type="number"
           name="bloodPressure.systolic"
@@ -95,7 +114,9 @@ const HealthDataForm = ({ userId }) => {
 
       {/* Sleep Pattern */}
       <div className="mb-4">
-        <label className="block mb-2 text-gray-300">Sleep Duration (in hours):</label>
+        <label className="block mb-2 text-gray-300">
+          Sleep Duration (in hours):
+        </label>
         <input
           type="number"
           name="sleepPattern.duration"
