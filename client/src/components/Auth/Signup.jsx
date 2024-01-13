@@ -14,8 +14,6 @@ const Signup = () => {
     location: "",
   });
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -43,6 +41,11 @@ const Signup = () => {
         // You can also handle other errors or display a message to the user.
       }
     }
+  };
+
+  // Function to handle redirection to the sign-up page
+  const redirectToLogIn = () => {
+    navigate("/"); // Replace "/signup" with the actual route for your sign-up page
   };
 
   return (
@@ -175,6 +178,16 @@ const Signup = () => {
             Sign Up
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={redirectToLogIn} // Attach onClick event to redirect to sign-up page
+            className="text-blue-500 "
+          >
+            Already have an account?{" "}
+            <span className="text-white hover:underline">Log In</span>
+          </button>
+        </div>
       </div>
     </div>
   );

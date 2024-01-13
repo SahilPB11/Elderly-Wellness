@@ -37,6 +37,11 @@ const Login = () => {
     }
   };
 
+  // Function to handle redirection to the sign-up page
+  const redirectToSignUp = () => {
+    navigate("/signup"); // Replace "/signup" with the actual route for your sign-up page
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-900 text-white">
       {/* Background Image for Large Screens */}
@@ -87,6 +92,16 @@ const Login = () => {
             Login
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={redirectToSignUp} // Attach onClick event to redirect to sign-up page
+            className="text-blue-500"
+          >
+            Don't have an account?{" "}
+            <span className="text-white hover:underline">Sign Up</span>
+          </button>
+        </div>
       </div>
     </div>
   );
